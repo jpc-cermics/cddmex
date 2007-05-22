@@ -71,7 +71,7 @@ typedef enum {
 
 typedef enum {
   dd_MaxIndex, dd_MinIndex, dd_MinCutoff, dd_MaxCutoff, dd_MixCutoff,
-   dd_LexMin, dd_LexMax, dd_RandomRow
+  dd_LexMin, dd_LexMax, dd_RandomRow
 } dd_RowOrderType;
 
 typedef enum {
@@ -97,7 +97,7 @@ typedef enum {
 typedef enum {
   dd_Auto, dd_SemiAuto, dd_Manual
 } dd_FileInputModeType;   
-   /* Auto if a input filename is specified by command arguments */
+/* Auto if a input filename is specified by command arguments */
 
 typedef enum {
   dd_DimensionTooLarge, dd_ImproperInputFormat, 
@@ -146,8 +146,8 @@ typedef struct dd_lpsolution {
   dd_rowrange re;  /* row index as a certificate in the case of inconsistency */
   dd_colrange se;  /* col index as a certificate in the case of dual inconsistency */
   long pivots[5]; 
-   /* pivots[0]=setup (to find a basis), pivots[1]=PhaseI or Criss-Cross,
-      pivots[2]=Phase II, pivots[3]=Anticycling, pivots[4]=GMP postopt. */
+  /* pivots[0]=setup (to find a basis), pivots[1]=PhaseI or Criss-Cross,
+     pivots[2]=Phase II, pivots[3]=Anticycling, pivots[4]=GMP postopt. */
   long total_pivots;
 } dd_LPSolutionType;
 
@@ -158,7 +158,7 @@ typedef struct dd_lpdata {
   dd_LPObjectiveType objective;
   dd_LPSolverType solver; 
   dd_boolean Homogeneous;  
-     /* The first column except for the obj row is all zeros. */
+  /* The first column except for the obj row is all zeros. */
   dd_rowrange m;
   dd_colrange d;
   dd_Amatrix A;
@@ -179,8 +179,8 @@ typedef struct dd_lpdata {
   dd_rowrange re;  /* row index as a certificate in the case of inconsistency */
   dd_colrange se;  /* col index as a certificate in the case of dual inconsistency */
   long pivots[5]; 
-   /* pivots[0]=setup (to find a basis), pivots[1]=PhaseI or Criss-Cross,
-      pivots[2]=Phase II, pivots[3]=Anticycling, pivots[4]=GMP postopt. */
+  /* pivots[0]=setup (to find a basis), pivots[1]=PhaseI or Criss-Cross,
+     pivots[2]=Phase II, pivots[3]=Anticycling, pivots[4]=GMP postopt. */
   long total_pivots;
   int use_given_basis;  /* switch to indicate the use of the given basis */
   dd_colindex given_nbindex;  /* given basis represented by nonbasic indices */
@@ -196,9 +196,9 @@ typedef struct  dd_matrixdata *dd_MatrixPtr;
 typedef struct  dd_matrixdata {
   dd_rowrange rowsize;
   dd_rowset linset; 
-    /*  a subset of rows of linearity (ie, generators of
-        linearity space for V-representation, and equations
-        for H-representation. */
+  /*  a subset of rows of linearity (ie, generators of
+      linearity space for V-representation, and equations
+      for H-representation. */
   dd_colrange colsize;
   dd_RepresentationType representation;
   dd_NumberType numbtype;
@@ -241,7 +241,7 @@ typedef struct dd_polyhedradata {
   dd_Arow c;           /* cost vector */
 
   dd_rowflag EqualityIndex;  
-    /* ith component is 1 if it is equality, -1 if it is strict inequality, 0 otherwise. */
+  /* ith component is 1 if it is equality, -1 if it is strict inequality, 0 otherwise. */
 
   dd_boolean NondegAssumed;
   dd_boolean InitBasisAtBottom;
@@ -249,22 +249,22 @@ typedef struct dd_polyhedradata {
   dd_boolean RelaxedEnumeration;
 
   dd_rowrange m1; 
-    /* = m or m+1 (when representation=Inequality && !homogeneous)
-       This data is written after dd_ConeDataLoad is called.  This
-       determines the size of Ainc. */
+  /* = m or m+1 (when representation=Inequality && !homogeneous)
+     This data is written after dd_ConeDataLoad is called.  This
+     determines the size of Ainc. */
   dd_boolean AincGenerated;
-    /* Indicates whether Ainc, Ared, Adom are all computed.
-       All the variables below are valid only when this is TRUE */
+  /* Indicates whether Ainc, Ared, Adom are all computed.
+     All the variables below are valid only when this is TRUE */
   dd_colrange ldim;   /* linearity dimension */
   dd_bigrange n; 
-    /* the size of output = total number of rays 
-       in the computed cone + linearity dimension */
+  /* the size of output = total number of rays 
+     in the computed cone + linearity dimension */
   dd_Aincidence Ainc;
-    /* incidence of input and output */
+  /* incidence of input and output */
   dd_rowset Ared;  
-    /* redundant set of rows whose removal results in a minimal system */
+  /* redundant set of rows whose removal results in a minimal system */
   dd_rowset Adom;  
-    /* dominant set of rows (those containing all rays). */
+  /* dominant set of rows (those containing all rays). */
 
 } dd_PolyhedraType;
 
@@ -279,7 +279,7 @@ typedef struct dd_conedata {
   dd_rowrange m_alloc; /* allocated row size of matrix A */
   dd_colrange d_alloc; /* allocated col size of matrix A */
 
-/* CONTROL: variables to control computation */
+  /* CONTROL: variables to control computation */
   dd_rowrange Iteration;
   dd_RowOrderType HalfspaceOrder;
   dd_RayPtr FirstRay, LastRay, ArtificialRay; /* The second description: Generator */
@@ -289,8 +289,8 @@ typedef struct dd_conedata {
 
   dd_boolean ColReduced;  /* flag to indicate that a column basis is computed and reduced */
   dd_bigrange LinearityDim;   
-           /*  the dimension of the linearity space (when input is H), and
-               the size of a minimal system of equations to determine the space (when V). */
+  /*  the dimension of the linearity space (when input is H), and
+      the size of a minimal system of equations to determine the space (when V). */
   dd_colrange d_orig;  /* the size d of the original matrix A */
   dd_colindex newcol;  /* the size d of the original matrix A */
   
@@ -299,16 +299,16 @@ typedef struct dd_conedata {
   dd_boolean RecomputeRowOrder;
   dd_boolean PreOrderedRun;
   dd_rowset GroundSet, EqualitySet, NonequalitySet, 
-       AddedHalfspaces, WeaklyAddedHalfspaces, InitialHalfspaces;
+    AddedHalfspaces, WeaklyAddedHalfspaces, InitialHalfspaces;
   long RayCount, FeasibleRayCount, WeaklyFeasibleRayCount,
-       TotalRayCount, ZeroRayCount;
+    TotalRayCount, ZeroRayCount;
   long EdgeCount, TotalEdgeCount;
   long count_int,count_int_good,count_int_bad; /* no. of intersection operations */
 
   dd_Bmatrix B;
   dd_Bmatrix Bsave;  /* a copy of the dual basis inverse used to reduce the matrix A */
 
-/* STATES: variables to represent current state. */
+  /* STATES: variables to represent current state. */
   dd_ErrorType Error;
   dd_CompStatusType CompStatus;  /* Computation Status */
   time_t starttime, endtime;

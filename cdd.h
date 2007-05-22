@@ -33,7 +33,7 @@ extern mytype dd_zero;
 extern mytype dd_one;
 extern mytype dd_purezero;
 extern mytype dd_minuszero;
-   /* to be used to avoid creating temporary spaces for mytype */
+/* to be used to avoid creating temporary spaces for mytype */
 #define dd_almostzero  1.0E-7
 
 /* ---------- FUNCTIONS MEANT TO BE PUBLIC ---------- */
@@ -88,7 +88,7 @@ dd_boolean dd_SRedundant(dd_MatrixPtr, dd_rowrange, dd_Arow, dd_ErrorType *);  /
 dd_rowset dd_SRedundantRows(dd_MatrixPtr, dd_ErrorType *);  /* 093a */
 dd_rowset dd_RedundantRowsViaShooting(dd_MatrixPtr, dd_ErrorType *); /* 092 */
 dd_rowrange dd_RayShooting(dd_MatrixPtr, dd_Arow intpt, dd_Arow direction);  /* 092 */ 
- /* 092, find the first inequality "hit" by a ray from an intpt.  */
+/* 092, find the first inequality "hit" by a ray from an intpt.  */
 dd_boolean dd_ImplicitLinearity(dd_MatrixPtr, dd_rowrange, dd_Arow, dd_ErrorType *);  /* 092 */
 dd_rowset dd_ImplicitLinearityRows(dd_MatrixPtr, dd_ErrorType *);  /* 092  */
 dd_SetFamilyPtr dd_Matrix2Adjacency(dd_MatrixPtr, dd_ErrorType *);  /* 093 */
@@ -117,7 +117,7 @@ void dd_WriteMatrix(FILE *, dd_MatrixPtr);
 void dd_MatrixIntegerFilter(dd_MatrixPtr);
 void dd_WriteReal(FILE *, mytype);
 void dd_WriteNumber(FILE *f, mytype x); 
-    /* write a number depending on the arithmetic used.  */
+/* write a number depending on the arithmetic used.  */
 void dd_WritePolyFile(FILE *, dd_PolyhedraPtr);
 void dd_WriteRunningMode(FILE *, dd_PolyhedraPtr);
 void dd_WriteErrorMessages(FILE *, dd_ErrorType);
@@ -134,7 +134,7 @@ void dd_WriteInputIncidence(FILE *, dd_PolyhedraPtr);
 /* functions and types for LP solving */
 
 dd_LPPtr dd_Matrix2LP(dd_MatrixPtr, dd_ErrorType *);
-  /* a new way to load a matrix to create an LP object. */
+/* a new way to load a matrix to create an LP object. */
 
 dd_boolean dd_LPSolve(dd_LPPtr,dd_LPSolverType,dd_ErrorType *);
 dd_boolean dd_LPSolve0(dd_LPPtr,dd_LPSolverType,dd_ErrorType *);
@@ -147,11 +147,11 @@ void dd_WriteLP(FILE *, dd_LPPtr); /* 092 */
 
 dd_LPPtr dd_CreateLPData(dd_LPObjectiveType,dd_NumberType,dd_rowrange,dd_colrange);
 int dd_LPReverseRow(dd_LPPtr, dd_rowrange);
-    /* reverse the i-th row (1 <= i <= no. of rows) */
+/* reverse the i-th row (1 <= i <= no. of rows) */
 int dd_LPReplaceRow(dd_LPPtr, dd_rowrange, dd_Arow);
-    /* replace the i-th row (1 <= i <= no. of rows) */
+/* replace the i-th row (1 <= i <= no. of rows) */
 dd_Arow dd_LPCopyRow(dd_LPPtr, dd_rowrange);
-    /* copy the i-th row (1 <= i <= no. of rows) */
+/* copy the i-th row (1 <= i <= no. of rows) */
 
 void dd_FreeLPData(dd_LPPtr);
 void dd_FreeLPSolution(dd_LPSolutionPtr);
@@ -184,7 +184,7 @@ void dd_CopyArow(mytype *, mytype *, dd_colrange);
 void dd_CopyAmatrix(mytype **, mytype **, dd_rowrange, dd_colrange);
 void dd_CopyBmatrix(dd_colrange, dd_Bmatrix T, dd_Bmatrix TCOPY);
 void dd_CopyRay(mytype *, dd_colrange, dd_RayPtr,
-   dd_RepresentationType, dd_colindex);
+		dd_RepresentationType, dd_colindex);
 void dd_CreateInitialEdges(dd_ConePtr);
 void dd_CreateNewRay(dd_ConePtr, dd_RayPtr, dd_RayPtr, dd_rowrange);
 void dd_Eliminate(dd_ConePtr, dd_RayPtr*);
@@ -202,8 +202,8 @@ void dd_MatrixIntegerFilter(dd_MatrixPtr);
 void dd_ProcessCommandLine(FILE*,dd_MatrixPtr, char *);
 void dd_SelectNextHalfspace(dd_ConePtr, dd_rowset, dd_rowrange *);
 void dd_SelectPivot2(dd_rowrange,dd_colrange,dd_Amatrix,
-dd_Bmatrix,dd_RowOrderType,dd_rowindex, dd_rowset,dd_rowrange,dd_rowset,
-dd_colset,dd_rowrange *,dd_colrange *,dd_boolean *);
+		     dd_Bmatrix,dd_RowOrderType,dd_rowindex, dd_rowset,dd_rowrange,dd_rowset,
+		     dd_colset,dd_rowrange *,dd_colrange *,dd_boolean *);
 void dd_SelectPreorderedNext(dd_ConePtr, dd_rowset, dd_rowrange *);
 void dd_SetInequalitySets(dd_ConePtr);
 void dd_SnapToInteger(mytype, mytype);
@@ -213,7 +213,7 @@ void dd_TableauEntry(mytype *, dd_rowrange, dd_colrange, dd_Amatrix, dd_Bmatrix 
 void dd_UpdateEdges(dd_ConePtr, dd_RayPtr, dd_RayPtr);
 void dd_UpdateRowOrderVector(dd_ConePtr, dd_rowset PriorityRows);
 void dd_WriteRay(FILE *, dd_colrange, dd_RayPtr,
-   dd_RepresentationType, dd_colindex);
+		 dd_RepresentationType, dd_colindex);
 void dd_ZeroIndexSet(dd_rowrange, dd_colrange, dd_Amatrix, mytype *, dd_rowset);
 
 /* New functions to handle data loading, NON-PUBLIC */
