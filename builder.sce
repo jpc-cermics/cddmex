@@ -8,6 +8,17 @@ if exists('%nsp') then
   ilib_path_incl()
 end 
 
+
+chdir('libcdd');
+// we need to chdir to execute a builder.
+ok=exec('builder.sce',errcatch=%t);
+if ~ok then 
+  x_message('Compilation of source file failed\n");
+end
+chdir("..");
+
+
+
  // [3] the part devoted to shared lib generation 
 
 ilib_name  = 'libcddmex'; 	// interface library name 
@@ -24,7 +35,7 @@ libs  = ['./libcdd/libcdd'];
 
 table =['cddmex','cddmex','cmex'];
 
-ldflags = "";
+ldflags ="";
 cflags = "";
 fflags = "";
 

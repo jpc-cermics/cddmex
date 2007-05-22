@@ -1,0 +1,10 @@
+Makelib
+loader.sce
+Path.incl
+.nsp_history
+libsedumi.c
+*.o
+*.lo
+*.la
+.libs
+libcddmex.c
