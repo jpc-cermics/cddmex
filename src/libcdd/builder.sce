@@ -1,10 +1,6 @@
 // This is the builder.sce 
 // must be run from this directory 
 
-// [1] generate Path.incl 
-if exists('%nsp') then 
-  ilib_path_incl()
-end 
 
 // [3] the part devoted to shared lib generation 
 
