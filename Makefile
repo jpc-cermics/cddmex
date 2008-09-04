@@ -1,25 +1,24 @@
-include Path.incl 
+#/* -*- Mode: Makefile -*- */
+
+include Path.incl
 
 include $(SCIDIR)/Makefile.incl
 
-all	:: builder.sce 
-	@echo "running builder (be patient)"
-	@$(SCIDIR)/bin/scilab -nw -e "exec('builder.sce');quit" -errcatch >& /dev/null; 	
-	@echo "At prompt, enter:";
-	@echo "-->exec loader.sce";
-	@echo "----------------------------------------------------";
-
-
-tests	:: all
-
+all	:: 
+	@echo running builder 
+	@$(SCIDIR)/bin/nsp -nw -e "nsptest('builder.sce');quit" 
 
 clean	::
-	cd libcdd; make clean 
+	@cd src; make clean 
 
-distclean:: clean 
-	cd libcdd; make distclean 
+distclean::
+	@cd src; make distclean
 
-
+message:
+	@echo "------------------------------------------";
+	@echo "At Scilab prompt, enter:";
+	@echo "-->exec loader.sce";
+	@echo "------------------------------------------";
 
 
 

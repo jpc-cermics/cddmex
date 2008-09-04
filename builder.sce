@@ -1,48 +1,17 @@
-// Building script for Scilab. This script should be run only if
-// it is necessary to re-compile cddmex.c
+// This is the builder.sce
+// must be run from this directory
 
-// must be run from this directory 
+// [1] generate Path.incl
 
-// [1] generate Path.incl 
-if exists('%nsp') then 
-  ilib_path_incl()
-end 
+ilib_path_incl()
 
+// [2] the source 
 
-chdir('libcdd');
-// we need to chdir to execute a builder.
+chdir('src');
 ok=exec('builder.sce',errcatch=%t);
+chdir('../');
 if ~ok then 
-  x_message('Compilation of source file failed\n");
+  printf(strcat(lasterror()));
+  error('exec builder.sce failed in src');
 end
-chdir("..");
-
-
-
- // [3] the part devoted to shared lib generation 
-
-ilib_name  = 'libcddmex'; 	// interface library name 
-
-// objects files 
-
-files = [];
-
-// other libs needed for linking (must be shared library names)
-
-libs  = ['./libcdd/libcdd'];				
-
-// table of (scilab_name,interface-name or mexfile-name, type) 
-
-table =['cddmex','cddmex','cmex'];
-
-ldflags ="";
-cflags = "";
-fflags = "";
-
-Message=["\n Enter -->exec loader.sce at Scilab prompt to load cddmex \n"];
-
-// do not modify below 
-// ----------------------------------------------
-
-ilib_build(ilib_name,table,files,libs,ldflags = ldflags,cflags = cflags );
 

@@ -1,0 +1,31 @@
+
+This is a CDD interface for Nsp, based on CDDMEX by M. Baotic.
+
+The CDD library written by Komei Fukuda 
+(http://www.cs.mcgill.ca/~fukuda/soft/cdd_home/cdd.html).
+The version inserted here is the version 0.94b
+CDD is a software package which boasts a wide array
+of efficient algorithms for many polytope manipulations as well as a fast
+LP solver. The full CDD library is free and availible from:
+http://www.cs.mcgill.ca/~fukuda/soft/cdd_home/cdd.html
+
+CDDMEX is a Matlab MEX file interface (authors: Mato Baotic, Fabio Torrisi),
+to the CDD library. It enables calls to some of CDD functions from within 
+MATLAB. 
+Since the matlab mex functions are emulated in Nsp, the cddmex package 
+can be compiled and loaded in Nsp to enable calls to some of CDD functions 
+from within Nso.
+The CDDMEX source code is available at:
+    http://control.ee.ethz.ch/~hybrid/cdd.msql
+The version used here is 1.0
+
+To run CDD under enter 
+   -->exec loader.sce
+at Nsp prompt.
+
+You need first to compile the package by entering exec('builder.sce')
+at Nsp prompt.
+
+The help file is cddmex.help (plain ascii = original cddmex.m file for matlab).
+Examples can be run by copy-paste of .sci files.
+
