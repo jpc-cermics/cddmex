@@ -6,8 +6,9 @@
 chdir('libcdd');
 // we need to chdir to execute a builder.
 ok=exec('builder.sce',errcatch=%t);
+
 if ~ok then 
-  x_message('Compilation of source file failed\n");
+  message('Compilation of source file failed\n");
 end
 chdir("..");
 

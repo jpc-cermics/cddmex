@@ -1,3 +1,6 @@
+
+SHELL = /bin/csh
+
 include ../Path.incl 
 
 include $(SCIDIR)/Makefile.incl

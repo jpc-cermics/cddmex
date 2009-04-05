@@ -1,34 +1,21 @@
-// This is the builder.sce 
-// must be run from this directory 
+// builder code for libcdd library
+// -------------------------------
 
+link_name = [] ;    	// functions to be added to the call table 
+			// the first entry point gives the name of the library 
+			// or the library name can be given by libname= 
+flag  = "c";			// ext1c is a C function 
+files = ['cddcore.o' 'cddio.o' 'cddlib.o' 'cddlp.o' 'cddmp.o' 'cddproj.o' ...
+	 'setoper.o'];   // objects files
+libs  = [];			// other libs needed for linking 
+libname='cdd';
 
-// [3] the part devoted to shared lib generation 
-
-ilib_name  = 'cdd' 		// interface library name 
-
-// objects files (but do not give mexfiles here)
-
-files = ['cddcore.o' 'cddio.o' 'cddlib.o' 'cddlp.o' 'cddmp.o' 'cddproj.o' 'setoper.o'];   // objects files
-
-
-// other libs needed for linking (must be shared library names)
-
-libs =[];
-
-// table of (scilab_name,interface-name or mexfile-name, type) 
-
-table = [];
-
-
-ldflags =""
-cflags = ""
 
 // do not modify below 
-// ----------------------------------------------
+// -------------------------------------------------------
+// the next call generates files (Makelib,loader.sce) used
+// for compiling and loading ext1c and performs the compilation
 
-//ilib_build(ilib_name,table,files,libs,ldflags = ldflags,cflags = cflags );
-ilib_for_link(ilib_name,files,libs,ldflags = ldflags,cflags = cflags);
-
-printf("\n   Don''t run loader.sce!  \n");
+ilib_for_link(link_name,files,libs,flag,libname=libname);
 
 
