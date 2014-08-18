@@ -18,10 +18,11 @@ tests	:: all
 
 clean	::
 	cd libcdd; make clean 
+	make -f Makelib distclean
 
 distclean:: clean 
 	cd libcdd; make distclean 
-
+	make -f Makelib distclean
 
 
 
