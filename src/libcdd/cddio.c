@@ -24,7 +24,7 @@ void dd_SetLinearity(dd_MatrixPtr, char *);
 void dd_SetInputFile(FILE **f,dd_DataFileType inputfile,dd_ErrorType *Error)
 {
   int opened=0,stop,quit=0;
-  int i,dotpos=0,trial=0;
+  int i,/* dotpos=0,*/trial=0;
   char ch;
   char *tempname;
   
@@ -39,7 +39,7 @@ void dd_SetInputFile(FILE **f,dd_DataFileType inputfile,dd_ErrorType *Error)
       ch=inputfile[i];
       switch (ch) {
         case '.': 
-          dotpos=i+1;
+          /* dotpos=i+1; */
           break;
         case ';':  case ' ':  case '\0':  case '\n':  case '\t':     
           stop=dd_TRUE;
@@ -885,7 +885,7 @@ dd_MatrixPtr dd_PolyFile2Matrix (FILE *f, dd_ErrorType *Error)
   dd_colrange d_input,j;
   dd_RepresentationType rep=dd_Inequality;
   mytype value;
-  dd_boolean found=dd_FALSE, newformat=dd_FALSE, successful=dd_FALSE, linearity=dd_FALSE;
+  dd_boolean found=dd_FALSE, /* newformat=dd_FALSE,*/ /* successful=dd_FALSE, */ linearity=dd_FALSE;
   char command[dd_linelenmax], comsave[dd_linelenmax], numbtype[dd_wordlenmax];
   dd_NumberType NT;
 #if !defined(GMPRATIONAL)
@@ -902,10 +902,10 @@ dd_MatrixPtr dd_PolyFile2Matrix (FILE *f, dd_ErrorType *Error)
     }
     else {
       if (strncmp(command, "V-representation", 16)==0) {
-        rep=dd_Generator; newformat=dd_TRUE;
+        rep=dd_Generator; /*  newformat=dd_TRUE; */
       }
       if (strncmp(command, "H-representation", 16)==0){
-        rep=dd_Inequality; newformat=dd_TRUE;
+        rep=dd_Inequality; /* newformat=dd_TRUE; */
       }
       if (strncmp(command, "partial_enum", 12)==0 || 
           strncmp(command, "equality", 8)==0  ||
@@ -954,7 +954,7 @@ dd_MatrixPtr dd_PolyFile2Matrix (FILE *f, dd_ErrorType *Error)
      goto _L99;
   }
   
-  successful=dd_TRUE;
+  /* successful=dd_TRUE; */
   if (linearity) {
     dd_SetLinearity(M,comsave);
   }
