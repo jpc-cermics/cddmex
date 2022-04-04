@@ -1,6 +1,5 @@
 /* cddmp.c       (cddlib arithmetic operations using gmp)
-   Copyright: Komei Fukuda 2000, fukuda@ifor.math.ethz.ch
-   Version 0.94, Aug. 4, 2005
+   written by Komei Fukuda, fukuda@math.ethz.ch
 */
 /* This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -17,7 +16,7 @@
    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "setoper.h"  /* set operation library header (Ver. March 16,1995 or later) */
+#include "setoper.h"
 #include "cdd.h"
 
 void dd_set_global_constants()
@@ -59,6 +58,32 @@ void dd_set_global_constants()
 #endif
  dd_neg(dd_minuszero,dd_zero);
 }
+
+void dd_free_global_constants()
+{
+ dd_clear(dd_zero);
+ dd_clear(dd_minuszero);
+ dd_clear(dd_one);
+ dd_clear(dd_minusone);
+ dd_clear(dd_purezero);
+  
+ time(&dd_statStartTime); /* cddlib starting time */
+ dd_statBApivots=0;  /* basis finding pivots */
+ dd_statCCpivots=0;  /* criss-cross pivots */
+ dd_statDS1pivots=0; /* phase 1 pivots */
+ dd_statDS2pivots=0; /* phase 2 pivots */
+ dd_statACpivots=0;  /* anticycling (cc) pivots */
+
+ dd_choiceLPSolverDefault=dd_DualSimplex;  /* Default LP solver Algorithm */
+ dd_choiceRedcheckAlgorithm=dd_DualSimplex;  /* Redundancy Checking Algorithm */
+ dd_choiceLexicoPivotQ=dd_TRUE;    /* whether to use the lexicographic pivot */
+ 
+#if defined GMPRATIONAL
+ dd_statBSpivots=0;  /* basis status checking pivots */
+ ddf_free_global_constants();
+#endif
+}
+
 
 #if defined GMPRATIONAL
 void ddd_mpq_set_si(mytype a,signed long b)

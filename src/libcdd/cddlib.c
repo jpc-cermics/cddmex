@@ -1,6 +1,5 @@
 /* cddlib.c: cdd library  (library version of cdd)
-   written by Komei Fukuda, fukuda@ifor.math.ethz.ch
-   Version 0.94b, Aug. 25, 2005
+   written by Komei Fukuda, fukuda@math.ethz.ch
    Standard ftp site: ftp.ifor.math.ethz.ch, Directory: pub/fukuda/cdd
 */
 
@@ -32,7 +31,6 @@
 */
 
 #include "setoper.h" 
-  /* set operation library header (Ver. June 1, 2000 or later) */
 #include "cdd.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -152,8 +150,8 @@ void dd_InitialDataSetup(dd_ConePtr cone)
   if (last_d < cone->d){
     if (last_d>0) {
     for (j=0; j<last_d; j++){
-      dd_init(Vector1[j]);
-      dd_init(Vector2[j]);
+      dd_clear(Vector1[j]);
+      dd_clear(Vector2[j]);
     }
     free(Vector1); free(Vector2);
     }
@@ -320,7 +318,6 @@ dd_boolean dd_DDInputAppend(dd_PolyhedraPtr *poly, dd_MatrixPtr M,
 
   if ((*poly)->child!=NULL) dd_FreeDDMemory(*poly);
   dd_AppendMatrix2Poly(poly, M);
-  (*poly)->representation=dd_Inequality;
   found=dd_DoubleDescription(*poly, &error);
   *err=error;
   return found;

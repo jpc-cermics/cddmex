@@ -1,6 +1,5 @@
 /* cddio.c:  Basic Input and Output Procedures for cddlib
-   written by Komei Fukuda, fukuda@ifor.math.ethz.ch
-   Version 0.94, Aug. 4, 2005
+   written by Komei Fukuda, fukuda@math.ethz.ch
 */
 
 /* cddlib : C-library of the double description method for
@@ -10,7 +9,7 @@
    the manual cddlibman.tex for detail.
 */
 
-#include "setoper.h"  /* set operation library header (Ver. June 1, 2000 or later) */
+#include "setoper.h"
 #include "cdd.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,7 +23,7 @@ void dd_SetLinearity(dd_MatrixPtr, char *);
 void dd_SetInputFile(FILE **f,dd_DataFileType inputfile,dd_ErrorType *Error)
 {
   int opened=0,stop,quit=0;
-  int i,/* dotpos=0,*/trial=0;
+  int i,dotpos=0,trial=0;
   char ch;
   char *tempname;
   
@@ -39,7 +38,7 @@ void dd_SetInputFile(FILE **f,dd_DataFileType inputfile,dd_ErrorType *Error)
       ch=inputfile[i];
       switch (ch) {
         case '.': 
-          /* dotpos=i+1; */
+          dotpos=i+1;
           break;
         case ';':  case ' ':  case '\0':  case '\n':  case '\t':     
           stop=dd_TRUE;
@@ -138,7 +137,7 @@ void dd_SetWriteFileName(dd_DataFileType inputfile, dd_DataFileType outfile, cha
 }
 
 
-dd_NumberType dd_GetNumberType(char *line)
+dd_NumberType dd_GetNumberType(const char *line)
 {
   dd_NumberType nt;
 
@@ -157,7 +156,7 @@ dd_NumberType dd_GetNumberType(char *line)
   return nt;
 }
 
-void dd_ProcessCommandLine(FILE *f, dd_MatrixPtr M, char *line)
+void dd_ProcessCommandLine(FILE *f, dd_MatrixPtr M, const char *line)
 {
   char newline[dd_linelenmax];
   dd_colrange j;
@@ -293,6 +292,8 @@ dd_MatrixPtr dd_MatrixAppend(dd_MatrixPtr M1, dd_MatrixPtr M2)
        if (set_member(i+1,M2->linset)) set_addelem(M->linset,m1+i+1);
     }
     M->numbtype=M1->numbtype;
+    M->representation=M1->representation;
+    M->objective=M1->objective;
   }
   return M;
 }
@@ -310,8 +311,8 @@ dd_MatrixPtr dd_MatrixNormalizedSortedCopy(dd_MatrixPtr M,dd_rowindex *newpos)  
   /* if (newpos!=NULL) free(newpos); */
   m= M->rowsize;
   d= M->colsize;
-  roworder=(long *)calloc(m+1,sizeof(long*));
-  *newpos=(long *)calloc(m+1,sizeof(long*));
+  roworder=(long *)calloc(m+1,sizeof(long));
+  *newpos=(long *)calloc(m+1,sizeof(long));
   if (m >=0 && d >=0){
     Mnorm=dd_MatrixNormalizedCopy(M);
     Mcopy=dd_CreateMatrix(m, d);
@@ -354,7 +355,7 @@ dd_MatrixPtr dd_MatrixUniqueCopy(dd_MatrixPtr M,dd_rowindex *newpos)
   m= M->rowsize;
   d= M->colsize;
   preferredrows=M->linset;
-  roworder=(long *)calloc(m+1,sizeof(long*));
+  roworder=(long *)calloc(m+1,sizeof(long));
   if (m >=0 && d >=0){
     for(i=1; i<=m; i++) roworder[i]=i;
     dd_UniqueRows(roworder, 1, m, M->matrix, d,preferredrows, &uniqrows);
@@ -391,8 +392,8 @@ dd_MatrixPtr dd_MatrixNormalizedSortedUniqueCopy(dd_MatrixPtr M,dd_rowindex *new
   /* if (newpos!=NULL) free(newpos); */
   m= M->rowsize;
   d= M->colsize;
-  *newpos=(long *)calloc(m+1,sizeof(long*));  
-  newpos1r=(long *)calloc(m+1,sizeof(long*));  
+  *newpos=(long *)calloc(m+1,sizeof(long));  
+  newpos1r=(long *)calloc(m+1,sizeof(long));  
   if (m>=0 && d>=0){
     M1=dd_MatrixNormalizedSortedCopy(M,&newpos1);
     for (i=1; i<=m;i++) newpos1r[newpos1[i]]=i;  /* reverse of newpos1 */
@@ -426,8 +427,8 @@ dd_MatrixPtr dd_MatrixSortedUniqueCopy(dd_MatrixPtr M,dd_rowindex *newpos)  /* 0
   /* if (newpos!=NULL) free(newpos); */
   m= M->rowsize;
   d= M->colsize;
-  *newpos=(long *)calloc(m+1,sizeof(long*));  
-  newpos1r=(long *)calloc(m+1,sizeof(long*));  
+  *newpos=(long *)calloc(m+1,sizeof(long));  
+  newpos1r=(long *)calloc(m+1,sizeof(long));  
   if (m>=0 && d>=0){
     M1=dd_MatrixNormalizedSortedCopy(M,&newpos1);
     for (i=1; i<=m;i++) newpos1r[newpos1[i]]=i;  /* reverse of newpos1 */
@@ -495,6 +496,8 @@ int dd_MatrixAppendTo(dd_MatrixPtr *M1, dd_MatrixPtr M2)
        if (set_member(i+1,M2->linset)) set_addelem(M->linset,m1+i+1);
     }
     M->numbtype=(*M1)->numbtype;
+    M->representation=(*M1)->representation;
+    M->objective=(*M1)->objective;
     dd_FreeMatrix(*M1);
     *M1=M;
     success=1;
@@ -539,7 +542,7 @@ int dd_MatrixRowRemove2(dd_MatrixPtr *M, dd_rowrange r, dd_rowindex *newpos) /* 
   d=(*M)->colsize;
 
   if (r >= 1 && r <=m){
-    roworder=(long *)calloc(m+1,sizeof(long*));
+    roworder=(long *)calloc(m+1,sizeof(long));
     (*M)->rowsize=m-1;
     dd_FreeArow(d, (*M)->matrix[r-1]);
     set_delelem((*M)->linset,r);
@@ -605,7 +608,7 @@ dd_MatrixPtr dd_MatrixSubmatrix2(dd_MatrixPtr M, dd_rowset delset,dd_rowindex *n
   d= M->colsize;
   msub=m;
   if (m >=0 && d >=0){
-    roworder=(long *)calloc(m+1,sizeof(long*));
+    roworder=(long *)calloc(m+1,sizeof(long));
     for (i=1; i<=m; i++) {
        if (set_member(i,delset)) msub-=1;
     }
@@ -645,7 +648,7 @@ dd_MatrixPtr dd_MatrixSubmatrix2L(dd_MatrixPtr M, dd_rowset delset,dd_rowindex *
   d= M->colsize;
   msub=m;
   if (m >=0 && d >=0){
-    roworder=(long *)calloc(m+1,sizeof(long*));
+    roworder=(long *)calloc(m+1,sizeof(long));
     for (i=1; i<=m; i++) {
        if (set_member(i,delset)) msub-=1;
     }
@@ -729,6 +732,7 @@ dd_PolyhedraPtr dd_CreatePolyhedraData(dd_rowrange m, dd_colrange d)
   poly->n           =-1;  /* the size of output is not known */
   poly->m_alloc     =m+2; /* the allocated row size of matrix A */
   poly->d_alloc     =d;   /* the allocated col size of matrix A */
+  poly->ldim		=0;   /* initialize the linearity dimension */
   poly->numbtype=dd_Real;
   dd_InitializeAmatrix(poly->m_alloc,poly->d_alloc,&(poly->A));
   dd_InitializeArow(d,&(poly->c));           /* cost vector */
@@ -808,6 +812,7 @@ dd_boolean dd_InitializeConeData(dd_rowrange m, dd_colrange d, dd_ConePtr *cone)
 
   (*cone)->Edges
      =(dd_AdjacencyType**) calloc((*cone)->m_alloc,sizeof(dd_AdjacencyType*));
+  for (j=0; j<(*cone)->m_alloc; j++) (*cone)->Edges[j]=NULL; /* 094h */
   (*cone)->InitialRayIndex=(long*)calloc(d+1,sizeof(long));
   (*cone)->OrderVector=(long*)calloc((*cone)->m_alloc+1,sizeof(long));
 
@@ -885,7 +890,7 @@ dd_MatrixPtr dd_PolyFile2Matrix (FILE *f, dd_ErrorType *Error)
   dd_colrange d_input,j;
   dd_RepresentationType rep=dd_Inequality;
   mytype value;
-  dd_boolean found=dd_FALSE, /* newformat=dd_FALSE,*/ /* successful=dd_FALSE, */ linearity=dd_FALSE;
+  dd_boolean found=dd_FALSE, newformat=dd_FALSE, successful=dd_FALSE, linearity=dd_FALSE;
   char command[dd_linelenmax], comsave[dd_linelenmax], numbtype[dd_wordlenmax];
   dd_NumberType NT;
 #if !defined(GMPRATIONAL)
@@ -902,10 +907,10 @@ dd_MatrixPtr dd_PolyFile2Matrix (FILE *f, dd_ErrorType *Error)
     }
     else {
       if (strncmp(command, "V-representation", 16)==0) {
-        rep=dd_Generator; /*  newformat=dd_TRUE; */
+        rep=dd_Generator; newformat=dd_TRUE;
       }
       if (strncmp(command, "H-representation", 16)==0){
-        rep=dd_Inequality; /* newformat=dd_TRUE; */
+        rep=dd_Inequality; newformat=dd_TRUE;
       }
       if (strncmp(command, "partial_enum", 12)==0 || 
           strncmp(command, "equality", 8)==0  ||
@@ -954,7 +959,7 @@ dd_MatrixPtr dd_PolyFile2Matrix (FILE *f, dd_ErrorType *Error)
      goto _L99;
   }
   
-  /* successful=dd_TRUE; */
+  successful=dd_TRUE;
   if (linearity) {
     dd_SetLinearity(M,comsave);
   }
@@ -1266,21 +1271,8 @@ void dd_WriteReal(FILE *f, mytype x)
 void dd_WriteNumber(FILE *f, mytype x)
 {
 #if defined GMPRATIONAL
-  mpz_t zn,zd;
-
-  mpz_init(zn); mpz_init(zd);
-  mpq_canonicalize(x);
-  mpq_get_num(zn,x);
-  mpq_get_den(zd,x);
   fprintf(f," ");
-  if (mpz_sgn(zn)==0){
-    fprintf(f,"0");
-  } else if (mpz_cmp_ui(zd,1U)==0){
-    mpz_out_str(f,10,zn);
-  } else {
-    mpz_out_str(f,10,zn);fprintf(f,"/");mpz_out_str(f,10,zd);
-  }
-  mpz_clear(zn); mpz_clear(zd);
+  mpq_out_str(f, 10, x);
 #else
   dd_WriteReal(f, x);
 #endif
@@ -1942,7 +1934,7 @@ dd_MatrixPtr dd_CopyInequalities(dd_PolyhedraPtr poly)
 /****************************************************************************************/
 /*  rational number (a/b) read is taken from Vinci by Benno Bueeler and Andreas Enge    */
 /****************************************************************************************/
-void dd_sread_rational_value (char *s, mytype value)
+void dd_sread_rational_value (const char *s, mytype value)
    /* reads a rational value from the specified string "s" and assigns it to "value"    */
    
 {
@@ -2015,7 +2007,7 @@ void dd_fread_rational_value (FILE *f, mytype value)
    /* reads a rational value from the specified file "f" and assigns it to "value"      */
    
 {
-   char     number_s [255];
+   char     number_s [dd_wordlenmax];
    mytype rational_value;
    
    dd_init(rational_value);

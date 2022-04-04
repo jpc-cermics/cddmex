@@ -1,6 +1,5 @@
 /* cddcore.c:  Core Procedures for cddlib
-   written by Komei Fukuda, fukuda@ifor.math.ethz.ch
-   Version 0.94, Aug. 4, 2005
+   written by Komei Fukuda, fukuda@math.ethz.ch
 */
 
 /* cddlib : C-library of the double description method for
@@ -10,8 +9,9 @@
    the manual cddlibman.tex for detail.
 */
 
-#include "setoper.h"  /* set operation library header (Ver. June 1, 2000 or later) */
+#include "setoper.h"
 #include "cdd.h"
+#include "splitmix64.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -35,7 +35,7 @@ void dd_CheckAdjacency(dd_ConePtr cone,
     last_m=cone->m;
   }
 
-  if (dd_debug) localdebug=dd_TRUE;
+  localdebug=dd_debug;
   *adjacent = dd_TRUE;
   set_int(Face1, (*RP1)->ZeroSet, (*RP2)->ZeroSet);
   set_int(Face, Face1, cone->AddedHalfspaces);
@@ -163,22 +163,21 @@ void dd_StoreRay1(dd_ConePtr cone, mytype *p, dd_boolean *feasible)
   dd_clear(temp);
 }
 
-/* Ray storing routine when RelaxedEnumeration is dd_TRUE.
-   weaklyfeasible is true iff it is feasible with
-   the strict_inequality conditions deleted. */
-
 void dd_StoreRay2(dd_ConePtr cone, mytype *p, 
-		  dd_boolean *feasible, dd_boolean *weaklyfeasible)
+    dd_boolean *feasible, dd_boolean *weaklyfeasible)
+   /* Ray storing routine when RelaxedEnumeration is dd_TRUE.
+       weaklyfeasible is true iff it is feasible with
+       the strict_inequality conditions deleted. */
 {
   dd_RayPtr RR;
   dd_rowrange i,k,fii=cone->m+1;
   dd_colrange j;
   mytype temp;
-  /* dd_boolean localdebug=dd_debug; */
+  dd_boolean localdebug=dd_debug;
 
   dd_init(temp);
   RR=cone->LastRay;
-  /* if (dd_debug) localdebug=dd_TRUE; */
+  localdebug=dd_debug;
   *feasible = dd_TRUE;
   *weaklyfeasible = dd_TRUE;
   set_initialize(&(RR->ZeroSet),cone->m);
@@ -581,20 +580,20 @@ void dd_FreePolyhedra(dd_PolyhedraPtr poly)
 
 void dd_Normalize(dd_colrange d_size, mytype *V)
 {
-  long j; /* ,jmin=0; */
+  long j;
   mytype temp,min;
   dd_boolean nonzerofound=dd_FALSE;
 
   if (d_size>0){
     dd_init(min);  dd_init(temp);
-    dd_abs(min,V[0]); /* jmin=0; * set the minmizer to 0 */
+    dd_abs(min,V[0]); /* set the minmizer to 0 */
     if (dd_Positive(min)) nonzerofound=dd_TRUE;
     for (j = 1; j < d_size; j++) {
       dd_abs(temp,V[j]);
       if (dd_Positive(temp)){
         if (!nonzerofound || dd_Smaller(temp,min)){
           nonzerofound=dd_TRUE;
-          dd_set(min, temp); /*  jmin=j; */
+          dd_set(min, temp);
         }
       }
     }
@@ -681,18 +680,35 @@ void dd_PermuteCopyAmatrix(mytype **Acopy, mytype **A, dd_rowrange m, dd_colrang
 void dd_PermutePartialCopyAmatrix(mytype **Acopy, mytype **A, dd_rowrange m, dd_colrange d, dd_rowindex roworder,dd_rowrange p, dd_rowrange q)
 {
  /* copy the rows of A whose roworder is positive.  roworder[i] is the row index of the copied row. */
-  dd_rowrange i; /* ,k; */
-  /* k=0; */
+  dd_rowrange i;
+
   for (i = 1; i<= m; i++) {
     if (roworder[i]>0) dd_CopyArow(Acopy[roworder[i]-1],A[i-1],d);
   }
+}
+
+// The three following functions seems trivial but they
+// are usefull when writing a wrapper, e.g. they are used by CDDLib.jl
+void dd_SetMatrixObjective(dd_MatrixPtr M, dd_LPObjectiveType objective)
+{
+  M->objective = objective;
+}
+
+void dd_SetMatrixNumberType(dd_MatrixPtr M, dd_NumberType numbtype)
+{
+  M->numbtype = numbtype;
+}
+
+void dd_SetMatrixRepresentationType(dd_MatrixPtr M, dd_RepresentationType representation)
+{
+  M->representation = representation;
 }
 
 void dd_InitializeArow(dd_colrange d,dd_Arow *a)
 {
   dd_colrange j;
 
-  if (d>0) *a=(mytype*) calloc(d,sizeof(mytype));
+  *a=(mytype*) calloc(d,sizeof(mytype));
   for (j = 0; j < d; j++) {
       dd_init((*a)[j]);
   }
@@ -702,7 +718,7 @@ void dd_InitializeAmatrix(dd_rowrange m,dd_colrange d,dd_Amatrix *A)
 {
   dd_rowrange i;
 
-  if (m>0) (*A)=(mytype**) calloc(m,sizeof(mytype*));
+  (*A)=(mytype**) calloc(m,sizeof(mytype*));
   for (i = 0; i < m; i++) {
     dd_InitializeArow(d,&((*A)[i]));
   }
@@ -928,7 +944,7 @@ long dd_MatrixRank(dd_MatrixPtr M, dd_rowset ignoredrows, dd_colset ignoredcols,
   set_copy(ColSelected,ignoredcols);
   dd_InitializeBmatrix(M->colsize, &B);
   dd_SetToIdentity(M->colsize, B);
-  roworder=(long *)calloc(M->rowsize+1,sizeof(long*));
+  roworder=(long *)calloc(M->rowsize+1,sizeof(long));
   for (r=0; r<M->rowsize; r++){roworder[r+1]=r+1;
   }
 
@@ -1856,12 +1872,12 @@ void dd_QuickSort(dd_rowindex OV, long p, long r, dd_Amatrix A, long dmax)
 void dd_RandomPermutation(dd_rowindex OV, long t, unsigned int seed)
 {
   long k,j,ovj;
-  double u,xk,r,rand_max=(double) RAND_MAX;
+  double u,xk,r,rand_max=(double) UINT64_MAX;
   dd_boolean localdebug=dd_FALSE;
 
-  srand(seed);
+  srand_splitmix64(seed);
   for (j=t; j>1 ; j--) {
-    r=rand();
+    r=rand_splitmix64();
     u=r/rand_max;
     xk=(double)(j*u +1);
     k=(long)xk;
@@ -1921,7 +1937,7 @@ in highest order.
   long rr;
   dd_boolean found, localdebug=dd_FALSE;
   
-  if (dd_debug) localdebug=dd_TRUE;
+  localdebug=dd_debug;
   found=dd_TRUE;
   rr=set_card(PriorityRows);
   if (localdebug) set_fwrite(stderr,PriorityRows);

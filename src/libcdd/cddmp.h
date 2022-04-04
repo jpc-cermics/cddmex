@@ -1,6 +1,5 @@
 /* cddmp.h       (cddlib arithmetic operations using gmp)
-   Copyright: Komei Fukuda 2000, fukuda@ifor.math.ethz.ch
-   Version 0.94, Aug. 4, 2005
+   written by Komei Fukuda, fukuda@math.ethz.ch
 */
 
 /* This program is free software; you can redistribute it and/or modify
@@ -35,6 +34,7 @@
  #define dd_set(a, b)            mpq_set(a,b)     
  #define dd_set_si(a, b)         ddd_mpq_set_si(a,b)  /* defined in cddgmp.c */
  #define dd_set_si2(a, b, c)     mpq_set_si(a,b,c)    /* gmp 3.1 or higher */
+ #define dd_set_d(a, b)          mpq_set_d(a,b)       /* gmp 3.1 or higher */
  #define dd_add(a, b, c)         mpq_add(a,b,c)
  #define dd_sub(a, b, c)         mpq_sub(a,b,c)
  #define dd_mul(a, b, c)         mpq_mul(a,b,c)
@@ -95,6 +95,10 @@
  typedef double mytype[1];
 #endif
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 void ddd_mpq_set_si(mytype,signed long);
 void ddd_init(mytype);  
 void ddd_clear(mytype);
@@ -114,5 +118,10 @@ double ddd_get_d(mytype);
 void ddd_mpq_set_si(mytype,signed long);
 
 void dd_set_global_constants(void);
+void dd_free_global_constants(void);  /* 094d */
+
+#if defined(__cplusplus)
+}
+#endif
 
 /* end of  cddmp.h  */

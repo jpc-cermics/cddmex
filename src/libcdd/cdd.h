@@ -1,6 +1,5 @@
 /* cdd.h: Header file for cddlib.c 
-   written by Komei Fukuda, fukuda@ifor.math.ethz.ch
-   Version 0.94, Aug. 4, 2005
+   written by Komei Fukuda, fukuda@math.ethz.ch
 */
 
 /* cddlib.c : C-Implementation of the double description method for
@@ -26,6 +25,10 @@
 #ifndef __CDD_HF
 #include "cdd_f.h"
 #endif
+#endif
+
+#if defined(__cplusplus)
+extern "C" {
 #endif
 
 /* GLOBAL CONSTANTS and STATISTICS VARIABLES (to be set by dd_set_global_constants() */
@@ -217,7 +220,7 @@ dd_boolean dd_DoubleDescription2(dd_PolyhedraPtr, dd_RowOrderType, dd_ErrorType 
 
 void dd_FreeDDMemory0(dd_ConePtr);
 void dd_fread_rational_value (FILE *f, mytype value);
-void dd_sread_rational_value (char *s, mytype value);
+void dd_sread_rational_value (const char *s, mytype value);
 void dd_AddNewHalfspace1(dd_ConePtr, dd_rowrange);
 void dd_AddNewHalfspace2(dd_ConePtr, dd_rowrange);
 void dd_AddRay(dd_ConePtr, mytype *);
@@ -232,10 +235,12 @@ void dd_CopyNormalizedAmatrix(mytype **, mytype **, dd_rowrange, dd_colrange);
 void dd_CopyNormalizedArow(mytype *, mytype *, dd_colrange);
 void dd_CopyAmatrix(mytype **, mytype **, dd_rowrange, dd_colrange);
 void dd_PermuteCopyAmatrix(mytype **, mytype **, dd_rowrange, dd_colrange, dd_rowindex);
-void dd_PermutePartialCopyAmatrix(mytype **, mytype **, dd_rowrange, dd_colrange, dd_rowindex,dd_rowrange, dd_rowrange);
+void dd_PermutePartialCopyAmatrix(mytype **, mytype **, dd_rowrange, dd_colrange, dd_rowindex, dd_rowrange, dd_rowrange);
+void dd_SetMatrixObjective(dd_MatrixPtr, dd_LPObjectiveType);
+void dd_SetMatrixNumberType(dd_MatrixPtr, dd_NumberType);
+void dd_SetMatrixRepresentationType(dd_MatrixPtr, dd_RepresentationType);
 void dd_CopyBmatrix(dd_colrange, dd_Bmatrix T, dd_Bmatrix TCOPY);
-void dd_CopyRay(mytype *, dd_colrange, dd_RayPtr,
-   dd_RepresentationType, dd_colindex);
+void dd_CopyRay(mytype *, dd_colrange, dd_RayPtr, dd_RepresentationType, dd_colindex);
 void dd_CreateInitialEdges(dd_ConePtr);
 void dd_CreateNewRay(dd_ConePtr, dd_RayPtr, dd_RayPtr, dd_rowrange);
 void dd_Eliminate(dd_ConePtr, dd_RayPtr*);
@@ -251,7 +256,7 @@ dd_boolean dd_LexLarger(mytype *, mytype *, long);
 dd_boolean dd_LexEqual(mytype *, mytype *, long);
 void dd_Normalize(dd_colrange, mytype *);
 void dd_MatrixIntegerFilter(dd_MatrixPtr);
-void dd_ProcessCommandLine(FILE*,dd_MatrixPtr, char *);
+void dd_ProcessCommandLine(FILE*,dd_MatrixPtr, const char *);
 void dd_SelectNextHalfspace(dd_ConePtr, dd_rowset, dd_rowrange *);
 void dd_SelectPivot2(dd_rowrange,dd_colrange,dd_Amatrix,
 dd_Bmatrix,dd_RowOrderType,dd_rowindex, dd_rowset,dd_rowrange,dd_rowset,
@@ -269,14 +274,14 @@ void dd_WriteRay(FILE *, dd_colrange, dd_RayPtr,
 void dd_ZeroIndexSet(dd_rowrange, dd_colrange, dd_Amatrix, mytype *, dd_rowset);
 
 /* New functions to handle data loading, NON-PUBLIC */
-dd_NumberType dd_GetNumberType(char *);
+dd_NumberType dd_GetNumberType(const char *);
 dd_ConePtr dd_ConeDataLoad(dd_PolyhedraPtr);
 dd_PolyhedraPtr dd_CreatePolyhedraData(dd_rowrange, dd_colrange);
 dd_boolean dd_InitializeConeData(dd_rowrange, dd_colrange, dd_ConePtr*);
 dd_boolean dd_AppendMatrix2Poly(dd_PolyhedraPtr*, dd_MatrixPtr);
 
-
-
-
+#if defined(__cplusplus)
+}
+#endif
 
 /* end of cddlib.h */
