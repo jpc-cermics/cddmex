@@ -173,11 +173,11 @@ void dd_StoreRay2(dd_ConePtr cone, mytype *p,
   dd_rowrange i,k,fii=cone->m+1;
   dd_colrange j;
   mytype temp;
-  dd_boolean localdebug=dd_debug;
+  //dd_boolean localdebug=dd_debug;
 
   dd_init(temp);
   RR=cone->LastRay;
-  localdebug=dd_debug;
+  //localdebug=dd_debug;
   *feasible = dd_TRUE;
   *weaklyfeasible = dd_TRUE;
   set_initialize(&(RR->ZeroSet),cone->m);

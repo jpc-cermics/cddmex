@@ -1416,7 +1416,7 @@ When LP is dual-inconsistent then lp->se returns the evidence column.
   static dd_rowindex OrderVector;  /* the permutation vector to store a preordered row indeces */
   static dd_colindex nbindex_ref; /* to be used to store the initial feasible basis for lexico rule */
 
-  double redpercent=0,redpercent_prev=0,redgain=0;
+  double redpercent=0 /*, redpercent_prev=0*/ /*, redgain=0*/;
   unsigned int rseed=1;
   
   /* *err=dd_NoError; */
@@ -1497,8 +1497,8 @@ When LP is dual-inconsistent then lp->se returns the evidence column.
         dd_GetRedundancyInformation(lp->m,lp->d,lp->A,lp->B,lp->nbindex, bflag, lp->redset_extra);
         set_uni(lp->redset_accum, lp->redset_accum,lp->redset_extra);
         redpercent=100*(double)set_card(lp->redset_extra)/(double)lp->m;
-        redgain=redpercent-redpercent_prev;
-        redpercent_prev=redpercent;
+        //redgain=redpercent-redpercent_prev;
+        // redpercent_prev=redpercent;
         if (localdebug1){
           fprintf(stderr,"\ndd_DualSimplexMaximize: Phase II pivot %ld on (%ld, %ld).\n",pivots_ds,r,s);
           fprintf(stderr,"  redundancy %f percent: redset size = %ld\n",redpercent,set_card(lp->redset_extra));
@@ -2951,7 +2951,7 @@ dd_rowset dd_RedundantRowsViaShooting(dd_MatrixPtr M, dd_ErrorType *error)  /* 0
     } /* endwhile */
   } else {
     /* No interior point is found.  Apply the standard LP technique.  */
-    if (localdebug) printf("No interior-point is found and thus the standard LP technique will be used.\n", ired);
+    if (localdebug) printf("No interior-point is found and thus the standard LP technique will be used.\n");//, ired);
     redset=dd_RedundantRows(M, error);
   }
 
@@ -3290,7 +3290,7 @@ dd_ErrorType *error) /* 094 */
 /* This is to recongnize all implicit linearities, and put all linearities at the top of
    the matrix.    All implicit linearities will be returned by *impl_linset.
 */
-  dd_rowrange rank;
+  // dd_rowrange rank;
   dd_rowset linrows,ignoredrows,basisrows;
   dd_colset ignoredcols,basiscols;
   dd_rowrange i,k,m;
@@ -3310,7 +3310,7 @@ dd_ErrorType *error) /* 094 */
   set_initialize(&ignoredrows,  (*M)->rowsize);
   set_initialize(&ignoredcols,  (*M)->colsize);
   set_compl(ignoredrows,  (*M)->linset);
-  rank=dd_MatrixRank(*M,ignoredrows,ignoredcols,&basisrows,&basiscols);
+  /* rank=*/ dd_MatrixRank(*M,ignoredrows,ignoredcols,&basisrows,&basiscols);
   set_diff(ignoredrows,  (*M)->linset, basisrows);
   dd_MatrixRowsRemove2(M,ignoredrows,newpos);
   
@@ -3469,7 +3469,7 @@ that the dimension of the polyhedron is M->colsize - set_card(Lbasis) -1.
   dd_colset T, Lbasiscols;
   dd_boolean success=dd_FALSE;
   dd_rowrange i;
-  dd_colrange rank;
+  //dd_colrange rank;
   
 
   *ImL=dd_ImplicitLinearityRows(M, err);
@@ -3488,7 +3488,7 @@ that the dimension of the polyhedron is M->colsize - set_card(Lbasis) -1.
   }
   
   set_initialize(&T,  M->colsize); /* empty set */
-  rank=dd_MatrixRank(M,S,T,Lbasis,&Lbasiscols); /* the rank of the linearity submatrix of M.  */
+  /* rank=*/ dd_MatrixRank(M,S,T,Lbasis,&Lbasiscols); /* the rank of the linearity submatrix of M.  */
 
   set_free(S);
   set_free(T);
