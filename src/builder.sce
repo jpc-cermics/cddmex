@@ -29,7 +29,7 @@ libs  = ['./libcdd/libcdd'];
 table =['cddmex','cddmex','cmex'];
 
 ldflags ="";
-cflags = "-Ilibcdd";
+cflags = "-Ilibcdd -DMEXLIB";
 fflags = "";
 
 Message=["\n Enter -->exec loader.sce at Scilab prompt to load cddmex \n"];
